@@ -2,7 +2,7 @@
 Tic Tac Toe Player
 """
 
-from copy import deepcopy
+import copy
 import math
 
 X = "X"
@@ -51,7 +51,7 @@ def actions(board):
     """
     Returns set of all possible actions (i, j) available on the board.
     """
-    pActions = {}  # a set that will contain all possible actions
+    pActions = set()  # a set that will contain all possible actions
 
     for i in range(3):  # count number of empty cells on board and add them to pActions(possible actions) as a tuple
         for j in range(3):
@@ -68,13 +68,14 @@ def result(board, action):
 
     if (action not in actions(board)):  # if action is not in possible actions, raise exception
         raise Exception("Invalid action")
+
     else:
         # deepcopy board so that original board is not changed
-        boardDC = deepcopy(board)
+        boardDC = copy.deepcopy(board)
         # change the cell at action to the player who made the move(X,O)
         boardDC[action[0]][action[1]] = player(board)
 
-    return boardDC
+        return boardDC
 
 
 def winner(board):
@@ -147,11 +148,10 @@ def utility(board):
     elif (terminal(board) == True):
         return 0
 
-    else:
-        raise NotImplementedError
-
-
+    """"""
 # an additional function to help the minimax function {min_value, max_value}
+
+
 def min_value(board):
 
     if (terminal(board) == True):  # if the game is over, return the utility of the board
@@ -160,10 +160,13 @@ def min_value(board):
     # we declare this variable with infinity so that the AI using the Minimax algorithm can find the minimum value compared to infinity
     v = float('inf')
 
+    # for each action in possible actions, find the minimum value
     for action in actions(board):
         v = min(v, max_value(result(board, action)))
 
     return v
+
+    """"""
 
 
 def max_value(board):
@@ -174,6 +177,7 @@ def max_value(board):
     # we declare this variable with infinity so that the AI using the Minimax algorithm can find the minimum value compared to infinity
     v = float('-inf')
 
+    # for each action in possible actions, find the maximum value
     for action in actions(board):
         v = max(v, min_value(result(board, action)))
 
@@ -188,22 +192,22 @@ def minimax(board):
     if (terminal(board) == True):
         return utility(board)
 
-    # we declare this variable with infinity so that the AI using the Minimax algorithm can find the minimum value compared to infinity
-    minV = float('inf')
-    bestMove = {0, 0}
+    elif player(board) == X:  # if it is X's turn
+        moves = set()
+        for action in actions(board):
+            moves.add((min_value(result(board, action)), action))
 
-    for i in range(3):
-        for j in range(3):
-            if (board[i][j] == EMPTY):  # chekiang for possible actions on board
-                # we set the cell to the player who made the move(X,O)
-                board[i][j] = player(board)
-                # we call the min_value function to find the minimum value
-                v = min_value(board[i][j])
-                # we reset the cell to empty so that we can check for other possible actions
-                board[i][j] = EMPTY
-                if (v < minV):  # if the value is less than the minimum value, we set the minimum value to v
-                    minV = v
-                    # we set the best move to the cell that has the minimum value
-                    bestMove = {i, j}
+        # sort and return the action with the Lowest value
+        bestMove = sorted(moves, key=lambda x: x[0], reverse=True)[0][1]
 
-    return bestMove
+        return bestMove
+
+    elif player(board) == O:  # if it is O's turn
+        moves = set()
+        for action in actions(board):
+            moves.add((max_value(result(board, action)), action))
+
+        # sort and return the action with the Highest value
+        bestMove = sorted(moves, key=lambda x: x[0])[0][1]
+
+        return bestMove
