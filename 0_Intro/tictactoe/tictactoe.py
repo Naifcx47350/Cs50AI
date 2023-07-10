@@ -100,21 +100,17 @@ def winner(board):
                 return O
 
     # checking for diagonal wins
-    for i in range(3):  # i = rows
-        for j in range(3):  # j = columns
-            if (i == j == 0):  # when we start at row 0 and column 0
-                # (check for 0.0 == 1.1 == 2.2)
-                if (board[i][j] == board[i+1][j+1] == board[i+2][j+2] != EMPTY):
-                    if (board[i][j] == X):
-                        return X
-                    else:
-                        return O
-            elif (i == j == 2):
-                if (board[i][j] == board[i-1][j-1] == board[i-2][j-2] != EMPTY):
-                    if (board[i][j] == X):
-                        return X
-                    else:
-                        return O
+    if (board[0][0] == board[1][1] == board[2][2] != EMPTY):
+        if (board[0][0] == X):
+            return X
+        else:
+            return O
+
+    if (board[0][2] == board[1][1] == board[2][0] != EMPTY):
+        if (board[0][2] == X):
+            return X
+        else:
+            return O
 
     return None  # if no winner, return none
 
