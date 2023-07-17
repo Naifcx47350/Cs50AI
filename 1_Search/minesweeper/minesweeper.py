@@ -292,7 +292,7 @@ class MinesweeperAI():
         for i in range(self.height):
             for j in range(self.width):
                 # if the cell is not already a move made and not a mine then append it to the list
-                if (i, j) not in self.moves_made and (i, j) not in self.mines:
+                if (i, j) not in (self.moves_made and self.mines):
                     Possible_Random_moves.append((i, j))
                 else:
                     continue
