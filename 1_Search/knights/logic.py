@@ -212,7 +212,7 @@ class Biconditional(Sentence):
 
     def evaluate(self, model):
         return ((self.left.evaluate(model)
-                 and self.right.evaluate(model))
+                and self.right.evaluate(model))
                 or (not self.left.evaluate(model)
                     and not self.right.evaluate(model)))
 
