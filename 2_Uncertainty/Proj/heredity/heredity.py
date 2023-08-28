@@ -139,7 +139,69 @@ def joint_probability(people, one_gene, two_genes, have_trait):
         * everyone in set `have_trait` has the trait, and
         * everyone not in set` have_trait` does not have the trait.
     """
-    raise NotImplementedError
+
+    # Initialize joint probability
+    joint_prob = 1
+
+    # Loop through each person
+    for person in people:
+
+        # Initialize probability for person
+        prob = 1
+
+        # Get number of genes for person
+        num_genes = 0
+
+        if person in one_gene:
+            num_genes = 1
+
+        elif person in two_genes:
+            num_genes = 2
+
+        # Get whether person has trait
+        has_trait = False
+
+        if person in have_trait:
+            has_trait = True
+
+        # Get person's parents
+        mother = people[person]['mother']
+        father = people[person]['father']
+
+        # Get probability of person's genes
+        if mother == None and father == None:
+            prob *= PROBS['gene'][num_genes]
+
+        else:
+            # Get probability of person's genes based on parents' genes
+            mother_genes = 0
+            father_genes = 0
+
+            if mother in one_gene:
+                mother_genes = 1
+            elif mother in two_genes:
+                mother_genes = 2
+
+            if father in one_gene:
+                father_genes = 1
+            elif father in two_genes:
+                father_genes = 2
+
+            if num_genes == 0:
+                prob *= (1 - mother_genes * 0.5) * (1 - father_genes * 0.5)
+            elif num_genes == 1:
+                prob *= (mother_genes * 0.5) * (1 - father_genes * 0.5) + \
+                    (1 - mother_genes * 0.5) * (father_genes * 0.5)
+            elif num_genes == 2:
+                prob *= (mother_genes * 0.5) * (father_genes * 0.5)
+
+        # Get probability of person's trait
+        prob *= PROBS['trait'][num_genes][has_trait]
+
+        # Update joint probability
+        joint_prob *= prob
+
+    return joint_prob
 
 
 def update(probabilities, one_gene, two_genes, have_trait, p):
@@ -149,7 +211,32 @@ def update(probabilities, one_gene, two_genes, have_trait, p):
     Which value for each distribution is updated depends on whether
     the person is in `have_gene` and `have_trait`, respectively.
     """
-    raise NotImplementedError
+
+    # Loop through each person
+    for person in probabilities:
+
+        # Get number of genes for person
+        num_genes = 0
+
+        if person in one_gene:
+            num_genes = 1
+
+        elif person in two_genes:
+            num_genes = 2
+
+        # Get whether person has trait
+        has_trait = False
+
+        if person in have_trait:
+            has_trait = True
+
+        # Update probability of person's genes
+        probabilities[person]['gene'][num_genes] += p
+
+        # Update probability of person's trait
+        probabilities[person]['trait'][has_trait] += p
+
+    return probabilities
 
 
 def normalize(probabilities):
@@ -157,7 +244,31 @@ def normalize(probabilities):
     Update `probabilities` such that each probability distribution
     is normalized (i.e., sums to 1, with relative proportions the same).
     """
-    raise NotImplementedError
+
+    # Loop through each person
+    for person in probabilities:
+
+        # Get total probability for person's genes
+        total_prob_genes = 0
+
+        for num_genes in probabilities[person]['gene']:
+            total_prob_genes += probabilities[person]['gene'][num_genes]
+
+        # Get total probability for person's trait
+        total_prob_trait = 0
+
+        for has_trait in probabilities[person]['trait']:
+            total_prob_trait += probabilities[person]['trait'][has_trait]
+
+        # Normalize person's genes
+        for num_genes in probabilities[person]['gene']:
+            probabilities[person]['gene'][num_genes] /= total_prob_genes
+
+        # Normalize person's trait
+        for has_trait in probabilities[person]['trait']:
+            probabilities[person]['trait'][has_trait] /= total_prob_trait
+
+    return probabilities
 
 
 if __name__ == "__main__":
