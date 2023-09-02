@@ -29,7 +29,7 @@ knowledge0 = And(
 # * A is a knave.
 
 
-# Puzzle 1
+#! Puzzle 1
 # A says "We are both knaves."
 # B says nothing.
 knowledge1 = And(
@@ -56,7 +56,7 @@ knowledge1 = And(
 # * A is a knave.
 # * B is a knight.
 
-# Puzzle 2 #fixed
+#! Puzzle 2 #fixed
 # A says "We are the same kind."
 # B says "We are of different kinds."
 knowledge2 = And(
@@ -99,7 +99,7 @@ knowledge2 = And(
 # * A is a knave.
 # * B is a Knight.
 
-# Puzzle 3
+#! Puzzle 3
 # A says either "I am a knight." or "I am a knave.", but you don't know which.
 # B says "A said 'I am a knave'."
 # B says "C is a knave."
